@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 TerraForged
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.terraforged.fm.data;
 
 import com.google.gson.JsonElement;
@@ -25,10 +49,10 @@ public class DataManager implements AutoCloseable {
     public static final Predicate<String> NBT = s -> s.endsWith(".nbt");
     public static final Predicate<String> JSON = s -> s.endsWith(".json");
 
-    private final ResourcePackList<ResourcePackInfo> packList;
+    private final ResourcePackList packList;
     private final IResourceManager resourceManager;
 
-    public DataManager(IResourceManager resourceManager, ResourcePackList<ResourcePackInfo> packList) {
+    public DataManager(IResourceManager resourceManager, ResourcePackList packList) {
         this.resourceManager = resourceManager;
         this.packList = packList;
     }
@@ -69,8 +93,8 @@ public class DataManager implements AutoCloseable {
     }
 
     public static DataManager of(File dir) {
-        SimpleReloadableResourceManager manager = new SimpleReloadableResourceManager(ResourcePackType.SERVER_DATA, Thread.currentThread());
-        ResourcePackList<ResourcePackInfo> packList = new ResourcePackList<>(ResourcePackInfo::new);
+        SimpleReloadableResourceManager manager = new SimpleReloadableResourceManager(ResourcePackType.SERVER_DATA);
+        ResourcePackList packList = new ResourcePackList(ResourcePackInfo::new);
 
         packList.addPackFinder(new ModDataPackFinder());
         // add global packs after mods so that they override

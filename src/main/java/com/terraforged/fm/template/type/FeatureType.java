@@ -1,5 +1,4 @@
 /*
- *
  * MIT License
  *
  * Copyright (c) 2020 TerraForged
@@ -25,8 +24,8 @@
 
 package com.terraforged.fm.template.type;
 
-import com.terraforged.fm.template.decorator.Decorator;
 import com.terraforged.fm.matcher.feature.FeatureMatcher;
+import com.terraforged.fm.template.decorator.Decorator;
 import com.terraforged.fm.template.feature.Placement;
 import net.minecraft.util.ResourceLocation;
 

@@ -22,31 +22,24 @@
  * SOFTWARE.
  */
 
-package com.terraforged.fm.matcher.feature;
+package com.terraforged.fm.util.codec;
 
-import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.Encoder;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface EncoderFunc<V> extends Encoder<V> {
 
-public class Search {
+    <T> Dynamic<T> _encode(V v, DynamicOps<T> ops);
 
-    private final List<Matcher> matchers;
-
-    Search(List<Rule> list) {
-        matchers = new ArrayList<>(list.size());
-        for (Rule rule : list) {
-            matchers.add(rule.createMatcher());
+    @Override
+    default <T> DataResult<T> encode(V input, DynamicOps<T> ops, T prefix) {
+        try {
+            Dynamic<T> dynamic = _encode(input, ops);
+            return DataResult.success(dynamic.getValue());
+        } catch (Throwable t) {
+            return DataResult.error(t.getMessage());
         }
-    }
-
-    public boolean test(JsonPrimitive value) {
-        for (Matcher matcher : matchers) {
-            matcher.test(value);
-            if (matcher.complete()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

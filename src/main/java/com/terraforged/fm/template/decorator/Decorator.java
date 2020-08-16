@@ -1,5 +1,4 @@
 /*
- *
  * MIT License
  *
  * Copyright (c) 2020 TerraForged
@@ -27,6 +26,7 @@ package com.terraforged.fm.template.decorator;
 
 import com.google.gson.JsonElement;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 
 import java.util.Optional;
@@ -38,7 +38,7 @@ public interface Decorator<T extends IWorld> {
 
     interface Factory<T extends IWorld> {
 
-        T wrap(IWorld world);
+        T wrap(ISeedReader world);
 
         Optional<Decorator<T>> parse(ResourceLocation type, JsonElement config);
     }

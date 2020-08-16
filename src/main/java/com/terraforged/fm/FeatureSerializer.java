@@ -1,5 +1,4 @@
 /*
- *
  * MIT License
  *
  * Copyright (c) 2020 TerraForged
@@ -26,8 +25,10 @@
 package com.terraforged.fm;
 
 import com.google.gson.JsonElement;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.JsonOps;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.OptionalDynamic;
+import com.terraforged.fm.util.codec.Codecs;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -39,12 +40,11 @@ public class FeatureSerializer {
     public static final Marker MARKER = MarkerManager.getMarker("Serializer");
 
     public static JsonElement serialize(ConfiguredFeature<?, ?> feature) {
-        return feature.serialize(JsonOps.INSTANCE).getValue();
+        return Codecs.encode(ConfiguredFeature.field_242763_a, feature);
     }
 
     public static ConfiguredFeature<?, ?> deserializeUnchecked(JsonElement element) {
-        Dynamic<JsonElement> dynamic = new Dynamic<>(JsonOps.INSTANCE, element);
-        return ConfiguredFeature.deserialize(dynamic);
+        return Codecs.decode(ConfiguredFeature.field_242763_a, element).orElseThrow(RuntimeException::new);
     }
 
     public static Optional<ConfiguredFeature<?, ?>> deserialize(JsonElement element) {
@@ -53,5 +53,17 @@ public class FeatureSerializer {
         } catch (Throwable t) {
             return Optional.empty();
         }
+    }
+
+    public static <T> T encode(ConfiguredFeature<?, ?> feature, DynamicOps<T> ops) {
+        return Codecs.encodeAndGet(ConfiguredFeature.field_242763_a, feature, ops);
+    }
+
+    public static <T> Optional<ConfiguredFeature<?, ?>> decode(OptionalDynamic<T> dynamic) {
+        return dynamic.get().result().flatMap(FeatureSerializer::decode);
+    }
+
+    public static <T> Optional<ConfiguredFeature<?, ?>> decode(Dynamic<T> dynamic) {
+        return Codecs.decode(ConfiguredFeature.field_242763_a, dynamic.getValue(), dynamic.getOps());
     }
 }

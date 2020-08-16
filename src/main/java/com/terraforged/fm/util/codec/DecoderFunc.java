@@ -22,31 +22,24 @@
  * SOFTWARE.
  */
 
-package com.terraforged.fm.matcher.feature;
+package com.terraforged.fm.util.codec;
 
-import com.google.gson.JsonPrimitive;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Decoder;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface DecoderFunc<V> extends Decoder<V> {
 
-public class Search {
+    <T> V _decode(Dynamic<T> dynamic);
 
-    private final List<Matcher> matchers;
-
-    Search(List<Rule> list) {
-        matchers = new ArrayList<>(list.size());
-        for (Rule rule : list) {
-            matchers.add(rule.createMatcher());
+    default <T> DataResult<Pair<V, T>> decode(DynamicOps<T> ops, T input) {
+        try {
+            V v = _decode(new Dynamic<>(ops, input));
+            return DataResult.success(Pair.of(v, input));
+        } catch (Throwable t) {
+            return DataResult.error(t.getMessage());
         }
-    }
-
-    public boolean test(JsonPrimitive value) {
-        for (Matcher matcher : matchers) {
-            matcher.test(value);
-            if (matcher.complete()) {
-                return true;
-            }
-        }
-        return false;
     }
 }
